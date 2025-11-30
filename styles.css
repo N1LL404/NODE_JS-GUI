@@ -440,6 +440,146 @@ body {
     cursor: pointer;
 }
 
+/* Go Backend Page Styles */
+.go-status-section {
+    margin-bottom: 30px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+    font-size: 16px;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.connected {
+    background: var(--success);
+    box-shadow: 0 0 10px var(--success);
+    animation: pulse 2s infinite;
+}
+
+.status-dot.disconnected {
+    background: var(--danger);
+}
+
+.status-dot.pending {
+    background: var(--warning);
+    animation: blink 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes blink {
+    0%, 50%, 100% {
+        opacity: 1;
+    }
+    25%, 75% {
+        opacity: 0.3;
+    }
+}
+
+.go-demo-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.go-demo-section h3 {
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+.go-card {
+    margin-bottom: 0;
+}
+
+.go-card h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.go-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 15px 0;
+    background: var(--bg-darker);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-light);
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+}
+
+.go-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.result-box {
+    margin-top: 15px;
+    padding: 15px;
+    background: var(--bg-darker);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+    display: none;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.result-box.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-box pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: var(--text-light);
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+
+.result-box.error {
+    border-left-color: var(--danger);
+}
+
+.result-box.success {
+    border-left-color: var(--success);
+}
+
+.text-gray {
+    color: var(--text-gray);
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
     width: 8px;

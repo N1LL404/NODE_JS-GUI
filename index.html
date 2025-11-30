@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://localhost:8080">
     <title>Electron Desktop App</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -26,6 +26,10 @@
                 <button class="nav-item" data-page="tasks">
                     <span class="icon">✅</span>
                     <span>Tasks</span>
+                </button>
+                <button class="nav-item" data-page="golang">
+                    <span class="icon">🐹</span>
+                    <span>Go Backend</span>
                 </button>
                 <button class="nav-item" data-page="settings">
                     <span class="icon">⚙️</span>
@@ -139,6 +143,58 @@
                             <input type="checkbox" id="task3">
                             <label for="task3">Update dependencies</label>
                             <span class="task-priority low">Low</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Go Backend Page -->
+                <div class="page" id="golang-page">
+                    <div class="go-status-section">
+                        <div class="card">
+                            <h3>🐹 Go Backend Status</h3>
+                            <div id="go-server-status" class="status-indicator">
+                                <span class="status-dot pending"></span>
+                                <span>Checking connection...</span>
+                            </div>
+                            <p id="go-server-url" class="text-gray"></p>
+                        </div>
+                    </div>
+
+                    <div class="go-demo-section">
+                        <h3>Go Backend Demos</h3>
+                        
+                        <!-- System Info Card -->
+                        <div class="card go-card">
+                            <h4>📊 System Information</h4>
+                            <p class="text-gray">Get system info from Go backend</p>
+                            <button class="btn btn-primary" id="get-system-info-btn">Get System Info</button>
+                            <div id="system-info-result" class="result-box"></div>
+                        </div>
+
+                        <!-- Greeting Card -->
+                        <div class="card go-card">
+                            <h4>👋 Greeting Service</h4>
+                            <p class="text-gray">Get a personalized greeting from Go</p>
+                            <input type="text" id="name-input" placeholder="Enter your name" class="go-input">
+                            <button class="btn btn-primary" id="greet-btn">Get Greeting</button>
+                            <div id="greet-result" class="result-box"></div>
+                        </div>
+
+                        <!-- Fibonacci Calculator -->
+                        <div class="card go-card">
+                            <h4>🔢 Fibonacci Calculator</h4>
+                            <p class="text-gray">Calculate Fibonacci numbers (Go computation)</p>
+                            <input type="number" id="fib-input" placeholder="Enter number (0-45)" min="0" max="45" class="go-input">
+                            <button class="btn btn-primary" id="compute-btn">Calculate</button>
+                            <div id="compute-result" class="result-box"></div>
+                        </div>
+
+                        <!-- File List -->
+                        <div class="card go-card">
+                            <h4>📁 File Operations</h4>
+                            <p class="text-gray">List files in project directory</p>
+                            <button class="btn btn-primary" id="list-files-btn">List Files</button>
+                            <div id="files-result" class="result-box"></div>
                         </div>
                     </div>
                 </div>

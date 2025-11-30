@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupNavigation();
     setupTaskManager();
     setupSettings();
+    await setupGoBackend();
 });
 
 // Load app information from main process
@@ -60,6 +61,7 @@ function setupNavigation() {
                 'home': 'Welcome Home',
                 'dashboard': 'Dashboard',
                 'tasks': 'Task Manager',
+                'golang': 'Go Backend Integration',
                 'settings': 'Settings'
             };
             pageTitle.textContent = titles[targetPage] || 'MyApp';
@@ -251,6 +253,233 @@ document.addEventListener('click', (e) => {
         showNotification('Check out the documentation!');
     }
 });
+
+// ============================================================================
+// Go Backend Integration
+// ============================================================================
+
+let goServerUrl = '';
+
+// Setup Go backend integration
+async function setupGoBackend() {
+    try {
+        goServerUrl = await window.electronAPI.getGoServerUrl();
+        document.getElementById('go-server-url').textContent = `Server: ${goServerUrl}`;
+        
+        // Check if Go server is running
+        await checkGoServerStatus();
+        
+        // Setup event listeners
+        setupGoEventListeners();
+    } catch (error) {
+        console.error('Error setting up Go backend:', error);
+    }
+}
+
+// Check if Go server is running
+async function checkGoServerStatus() {
+    const statusElement = document.getElementById('go-server-status');
+    
+    try {
+        const response = await fetch(`${goServerUrl}/health`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            statusElement.innerHTML = '<span class="status-dot connected"></span><span>Connected to Go server ✓</span>';
+            console.log('Go server status:', data);
+        } else {
+            throw new Error('Server responded with error');
+        }
+    } catch (error) {
+        statusElement.innerHTML = '<span class="status-dot disconnected"></span><span>Go server not available ✗</span>';
+        console.error('Go server connection failed:', error);
+        showNotification('Go server is not running. Build and it will start automatically.');
+    }
+}
+
+// Setup Go-related event listeners
+function setupGoEventListeners() {
+    // System Info button
+    const systemInfoBtn = document.getElementById('get-system-info-btn');
+    if (systemInfoBtn) {
+        systemInfoBtn.addEventListener('click', getSystemInfo);
+    }
+    
+    // Greet button
+    const greetBtn = document.getElementById('greet-btn');
+    if (greetBtn) {
+        greetBtn.addEventListener('click', getGreeting);
+    }
+    
+    // Compute button
+    const computeBtn = document.getElementById('compute-btn');
+    if (computeBtn) {
+        computeBtn.addEventListener('click', computeFibonacci);
+    }
+    
+    // List files button
+    const listFilesBtn = document.getElementById('list-files-btn');
+    if (listFilesBtn) {
+        listFilesBtn.addEventListener('click', listFiles);
+    }
+}
+
+// Get system info from Go
+async function getSystemInfo() {
+    const resultBox = document.getElementById('system-info-result');
+    
+    try {
+        showLoading(resultBox, 'Fetching system information...');
+        
+        const response = await fetch(`${goServerUrl}/system`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        const formatted = `
+Operating System: ${data.os}
+Architecture: ${data.architecture}
+CPU Cores: ${data.cpus}
+Go Version: ${data.goVersion}
+        `.trim();
+        
+        showResult(resultBox, formatted, 'success');
+        showNotification('System info retrieved successfully!');
+    } catch (error) {
+        showResult(resultBox, `Error: ${error.message}`, 'error');
+        console.error('Error fetching system info:', error);
+    }
+}
+
+// Get greeting from Go
+async function getGreeting() {
+    const nameInput = document.getElementById('name-input');
+    const resultBox = document.getElementById('greet-result');
+    const name = nameInput.value.trim() || 'World';
+    
+    try {
+        showLoading(resultBox, 'Getting greeting...');
+        
+        const response = await fetch(`${goServerUrl}/greet?name=${encodeURIComponent(name)}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        const formatted = `
+${data.greeting}
+Time: ${new Date(data.time).toLocaleString()}
+        `.trim();
+        
+        showResult(resultBox, formatted, 'success');
+    } catch (error) {
+        showResult(resultBox, `Error: ${error.message}`, 'error');
+        console.error('Error getting greeting:', error);
+    }
+}
+
+// Compute Fibonacci
+async function computeFibonacci() {
+    const fibInput = document.getElementById('fib-input');
+    const resultBox = document.getElementById('compute-result');
+    const number = parseInt(fibInput.value);
+    
+    if (isNaN(number) || number < 0 || number > 45) {
+        showResult(resultBox, 'Please enter a number between 0 and 45', 'error');
+        return;
+    }
+    
+    try {
+        showLoading(resultBox, 'Computing Fibonacci...');
+        
+        const response = await fetch(`${goServerUrl}/compute`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ number: number })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        const formatted = `
+Fibonacci(${data.input}) = ${data.result}
+Computation time: ${data.timeMs}ms
+        `.trim();
+        
+        showResult(resultBox, formatted, 'success');
+        showNotification(`Computed in ${data.timeMs}ms! 🚀`);
+    } catch (error) {
+        showResult(resultBox, `Error: ${error.message}`, 'error');
+        console.error('Error computing Fibonacci:', error);
+    }
+}
+
+// List files
+async function listFiles() {
+    const resultBox = document.getElementById('files-result');
+    
+    try {
+        showLoading(resultBox, 'Loading files...');
+        
+        const response = await fetch(`${goServerUrl}/files`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const files = await response.json();
+        
+        if (!files || files.length === 0) {
+            showResult(resultBox, 'No files found', 'success');
+            return;
+        }
+        
+        let formatted = 'Files in project directory:\n\n';
+        files.forEach(file => {
+            const icon = file.isDir ? '📁' : '📄';
+            const size = file.isDir ? '' : ` (${formatBytes(file.size)})`;
+            formatted += `${icon} ${file.name}${size}\n`;
+        });
+        
+        showResult(resultBox, formatted.trim(), 'success');
+        showNotification(`Found ${files.length} files/folders`);
+    } catch (error) {
+        showResult(resultBox, `Error: ${error.message}`, 'error');
+        console.error('Error listing files:', error);
+    }
+}
+
+// Helper function to show loading state
+function showLoading(element, message) {
+    element.className = 'result-box show';
+    element.innerHTML = `<pre>${message}</pre>`;
+}
+
+// Helper function to show result
+function showResult(element, text, type = 'success') {
+    element.className = `result-box show ${type}`;
+    element.innerHTML = `<pre>${text}</pre>`;
+}
+
+// Helper function to format bytes
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
 
 console.log('Renderer process initialized successfully!');
 
