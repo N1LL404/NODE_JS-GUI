@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
+    <title>Electron Desktop App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>⚡ MyApp</h1>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-item active" data-page="home">
+                    <span class="icon">🏠</span>
+                    <span>Home</span>
+                </button>
+                <button class="nav-item" data-page="dashboard">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" data-page="tasks">
+                    <span class="icon">✅</span>
+                    <span>Tasks</span>
+                </button>
+                <button class="nav-item" data-page="settings">
+                    <span class="icon">⚙️</span>
+                    <span>Settings</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="app-info">
+                    <p id="app-version">v1.0.0</p>
+                    <p id="platform">Loading...</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 id="page-title">Welcome Home</h2>
+                <div class="user-section">
+                    <button class="btn-icon" title="Notifications">🔔</button>
+                    <button class="btn-icon" title="User Profile">👤</button>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Home Page -->
+                <div class="page active" id="home-page">
+                    <div class="hero-section">
+                        <h1 class="hero-title">Welcome to Your Desktop App</h1>
+                        <p class="hero-subtitle">Built with Node.js and Electron</p>
+                        <div class="hero-buttons">
+                            <button class="btn btn-primary">Get Started</button>
+                            <button class="btn btn-secondary">Learn More</button>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid">
+                        <div class="card">
+                            <div class="card-icon">🚀</div>
+                            <h3>Fast Performance</h3>
+                            <p>Optimized for speed and efficiency with modern technologies.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🎨</div>
+                            <h3>Beautiful UI</h3>
+                            <p>Clean and modern interface following best UX practices.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🔒</div>
+                            <h3>Secure</h3>
+                            <p>Built with security best practices and context isolation.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">💻</div>
+                            <h3>Cross-Platform</h3>
+                            <p>Works seamlessly on Windows, macOS, and Linux.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Page -->
+                <div class="page" id="dashboard-page">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h4>Total Users</h4>
+                            <p class="stat-number">1,234</p>
+                            <span class="stat-change positive">+12% ↑</span>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Active Sessions</h4>
+                            <p class="stat-number">456</p>
+                            <span class="stat-change positive">+8% ↑</span>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Completed Tasks</h4>
+                            <p class="stat-number">789</p>
+                            <span class="stat-change negative">-3% ↓</span>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Revenue</h4>
+                            <p class="stat-number">$12.5K</p>
+                            <span class="stat-change positive">+15% ↑</span>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Activity Overview</h3>
+                        <p>Chart placeholder - integrate with your favorite charting library!</p>
+                    </div>
+                </div>
+
+                <!-- Tasks Page -->
+                <div class="page" id="tasks-page">
+                    <div class="tasks-header">
+                        <h3>Task Manager</h3>
+                        <button class="btn btn-primary" id="add-task-btn">+ Add Task</button>
+                    </div>
+
+                    <div class="task-list" id="task-list">
+                        <div class="task-item">
+                            <input type="checkbox" id="task1">
+                            <label for="task1">Complete project documentation</label>
+                            <span class="task-priority high">High</span>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" id="task2" checked>
+                            <label for="task2">Review pull requests</label>
+                            <span class="task-priority medium">Medium</span>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" id="task3">
+                            <label for="task3">Update dependencies</label>
+                            <span class="task-priority low">Low</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div class="page" id="settings-page">
+                    <div class="settings-section">
+                        <h3>Appearance</h3>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="dark-mode" checked>
+                                Dark Mode
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="animations" checked>
+                                Enable Animations
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Notifications</h3>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="notifications" checked>
+                                Enable Notifications
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="sounds">
+                                Notification Sounds
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>About</h3>
+                        <p>This is a modern Electron desktop application built with Node.js.</p>
+                        <button class="btn btn-secondary">Check for Updates</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
+
